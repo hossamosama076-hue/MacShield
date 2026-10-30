@@ -1,89 +1,88 @@
-# 🛡️ الدليل الشامل لإنشاء وتطوير أداة تغيير الـ MAC Address (Ultimate MAC Changer)
+# 🛡️ Ultimate MAC Changer - Comprehensive Development & Usage Guide
 
 ---
 
-## 📌 جدول المحتويات
-1. [المقدمة والنظرة العامة](#-المقدمة-والنظرة-العامة)
-2. [طريقة التغيير اليدوي مقارنة بالأداة البرمجية](#-طريقة-التغيير-اليدوي-مقارنة-بالأداة-البرمجية)
-3. [كيفية الوصول إلى مشروعك وتشغيله عبر التيرمينال](#-كيفية-الوصول-إلى-مشروعك-وتشغيله-عبر-التيرمينال)
-4. [الكود البرمجي النهائي (Python Script)](#-الكود-البرمجي-النهائي-python-script)
-5. [شرح مكونات الكود والميزات المتقدمة](#-شرح-مكونات-الكود-والميزات-المتقدمة)
-6. [دليل الاستخدام السريع والأوامر التجريبية](#-دليل-الاستخدام-السريع-والأوامر-التجريبية)
-7. [أفكار لتطوير الأداة مستقبلاً (Future Roadmap)](#-أفكار-لتطوير-الأداة-مستقبلاً-future-roadmap)
+## 📌 Table of Contents
+1. [Introduction & Overview](#-introduction--overview)
+2. [Manual vs. Automated Approach](#-manual-vs-automated-approach)
+3. [Accessing and Running Your Project via Terminal](#-accessing-and-running-your-project-via-terminal)
+4. [Final Python Script Code](#-final-python-script-code)
+5. [Code Architecture & Advanced Features](#-code-architecture--advanced-features)
+6. [Quick Usage Guide & Command Examples](#-quick-usage-guide--command-examples)
+7. [Future Roadmap & Enhancement Ideas](#-future-roadmap--enhancement-ideas)
 
 ---
 
-## 🎯 المقدمة والنظرة العامة
+## 🎯 Introduction & Overview
 
-عنوان **MAC Address** (Media Access Control) هو المعرف الفيزيائي الخاص بكرت الشبكة ويتكون من 12 رمزاً سداسي عشر (Hexadecimal) مقسمة على 6 أجزاء (مثل: `00:0c:29:95:73:6a`).
+A **MAC Address** (Media Access Control) is a unique physical identifier assigned to network interfaces, consisting of 12 hexadecimal characters divided into 6 pairs (e.g., `00:0c:29:95:73:6a`).
 
-### 💡 لماذا نغير الـ MAC Address؟
-* **الخصوصية والحماية:** لمنع تتبع الجهاز داخل الشبكات المحلية (LAN/Wi-Fi).
-* **اختبارات الاختراق (Penetration Testing):** لتجاوز فلاتر الشبكة (MAC Filtering) أو محاكاة أجهزة أخرى مصرح لها بالاتصال.
-* **الأمان الرقمي:** إخفاء الهوية الأصلية للجهاز أثناء التحقيقات أو التقييمات الأمنية.
+### 💡 Why Change the MAC Address?
+- **Privacy & Security:** Prevents device tracking across local networks (LAN/Wi-Fi).
+- **Penetration Testing:** Bypasses MAC filtering mechanisms or simulates authorized network nodes.
+- **Digital Hygiene:** Obscures the original hardware identity during assessments and security research.
 
 ---
 
-## ⚔️ طريقة التغيير اليدوي مقارنة بالأداة البرمجية
+## ⚔️ Manual Approach vs. Automated Tool
 
-### 1️⃣ الطريقة اليدوية (Manual Terminal Steps)
-
-إذا أردت تغيير الـ MAC يدويًا خطوة بخطوة من التيرمينال:
+### 1️⃣ Manual Terminal Workflow
+To manually change a MAC address step-by-step using native Linux commands:
 
 ```bash
-# 1. عرض الـ MAC الحالي ومعرفة اسم الكرت
+# 1. Display current MAC and verify interface name
 ifconfig eth0
 
-# 2. إيقاف كرت الشبكة مؤقتاً
+# 2. Bring down the network interface
 sudo ifconfig eth0 down
 
-# 3. إدخال عنوان الـ MAC الجديد
+# 3. Assign the new MAC address
 sudo ifconfig eth0 hw ether 00:11:22:33:44:55
 
-# 4. التأكد من التغيير قبل التشغيل
+# 4. Verify the modification
 ifconfig eth0
 
-# 5. إعادة تشغيل كرت الشبكة
+# 5. Bring the network interface back up
 sudo ifconfig eth0 up
 ```
 
 ---
 
-### 2️⃣ جدول مقارنة: الطريقة اليدوية vs الأداة البرمجية المتقدمة
+### 2️⃣ Comparison Table
 
-| وجه المقارنة | الطريقة اليدوية (`ifconfig`) | أداة بايثون (`mac_changer.py`) |
+| Comparison Criteria | Manual Method (`ifconfig`) | Python Tool (`mac_changer.py`) |
 | :--- | :--- | :--- |
-| **السرعة** | بطيئة وتتطلب كتابة 5 أوامر متتالية | سريعة جداً بضغطة زر واحدة أو أمر واحد |
-| **الأمان والسلامة** | قد تسبب مشاكل بالشبكة لو الـ MAC عشوائي وغير صحيح | تضمن توليد MAC من نوع **Unicast** لضمان استقرار الاتصال |
-| **فحص الصلاحيات** | يفشل الأمر إذا نسيت `sudo` دون تنبيه مسبق | تفحص صلاحيات الـ Root تلقائياً وتمنع الأخطاء |
-| **التحقق من المدخلات** | لا توجد حماية ضد كتابة MAC خاطئ | تفحص الـ Syntax باستخدام التعبيرات المنتظمة (Regex) |
-| **التوثيق (Logging)** | لا توجد سجلات للأعمال السابقة | تقوم بتسجيل كل عملية في ملف `mac_changer.log` بوقت وتاريخ دقيق |
-| **الواجهة** | نصية جافة | تحتوي على **Interactive Menu** وألوان مريحة ومبهرة |
+| **Speed** | Slow, requires executing 5 sequential commands | Instantaneous execution via automated flags |
+| **Safety & Stability** | Risk of network disconnection if a malformed MAC is used | Automatically enforces **Unicast** generation to ensure stable routing |
+| **Privilege Check** | Fails abruptly if `sudo` is omitted without proper warning | Validates root privileges upfront to prevent unhandled exceptions |
+| **Input Validation** | No built-in validation against typo-prone inputs | Strictly validates syntax using Regular Expressions (Regex) |
+| **Activity Logging** | No persistent history or operational audit trail | Automatically logs operations into `mac_changer.log` with precise timestamps |
+| **User Interface** | Plain, unstyled text output | Interactive CLI menu featuring ANSI-colorized, clean output |
 
 ---
 
-## 🖥️ كيفية الوصول إلى مشروعك وتشغيله عبر التيرمينال
+## 🖥️ Accessing and Running Your Project via Terminal
 
-للوصول إلى المجلد الذي تحتوي عليه الأدوات الخاصة بك وتشغيلها في نظام كالي لينكس (Kali Linux):
+To navigate to your project directory and execute the tool on Kali Linux:
 
-1. **الانتقال إلى مسار المشروع:**
+1. **Navigate to the Project Directory:**
    ```bash
    cd /home/kali/PycharmProjects/PythonProject
    ```
 
-2. **عرض الملفات الموجودة بالمجلد:**
+2. **List Directory Contents:**
    ```bash
    ls -la
    ```
 
-3. **تشغيل الأداة البرمجية:**
+3. **Run the Script:**
    ```bash
    sudo python3 mac_changer.py
    ```
 
 ---
 
-## 💻 الكود البرمجي النهائي (Python Script)
+## 💻 Final Python Script Code
 
 ```python
 import subprocess
@@ -275,52 +274,45 @@ if __name__ == "__main__":
 
 ---
 
-## 🔍 شرح مكونات الكود والميزات المتقدمة
+## 🔍 Code Architecture & Advanced Features
 
-1. **فحص الـ Root تلقائياً (`os.geteuid() != 0`):**
-   يمنع تشغيل السكربت دون صلاحيات الجذر ويخرج برسالة خطأ واضحة بدلاً من ظهور أخطاء نظام غير مفهومة.
+1. **Automatic Root Enforcement (`os.geteuid() != 0`):**
+   Prevents unauthorized execution by ensuring the script runs with administrative privileges, failing gracefully with a readable prompt instead of raw system stack traces.
 
-2. **توليد عنوان Unicast آمن (`& 0xFE`):**
-   تطبيق عملية Bitwise AND مع `0xFE` على أول بايت لتصفير البت الأخير، مما يضمن أن الـ MAC المولّد عشوائياً هو Unicast آمن ولا يتسبب في فصل كرت الشبكة أو مشاكل في الـ Routing.
+2. **Secure Unicast Generation (`& 0xFE`):**
+   Applies a bitwise AND operation with `0xFE` on the first octet, clearing the multicast/locally administered bit. This ensures generated addresses are valid Unicast MACs that prevent routing drops or adapter conflicts.
 
-3. **حفظ السجلات (Activity Logging):**
-   تسجيل كل عملية تغيير ناجحة داخل ملف `mac_changer.log` متبوعة بالتاريخ، الوقت،اسم الكرت، والـ MAC القديم والجديد.
+3. **Operational Audit Logging:**
+   Appends all successful state changes to `mac_changer.log`, capturing timestamps, interface names, and historical transitions (Old vs. New MAC).
 
-4. **التحقق المستمر (Verification Step):**
-   تقوم الأداة بإعادة قراءة كرت الشبكة بعد التغيير للتحقق الفعل من استجابة النظام للتعديل.
+4. **Post-Execution Verification:**
+   Queries the interface state post-assignment to confirm that the OS kernel successfully applied the requested alteration.
 
-5. **الألوان والواجهة التفاعلية:**
-   استخدام ANSI Escape Sequences لتلوين مخرجات التيرمينال وتوفير قائمة تفاعلية عند التشغيل السريع المباشر `sudo python3 mac_changer.py`.
+5. **Professional CLI Experience:**
+   Utilizes ANSI escape sequences for color-coded status messages and implements a robust interactive fallback menu when initialized without command-line arguments.
 
 ---
 
-## 🚀 دليل الاستخدام السريع والأوامر التجريبية
+## 🚀 Quick Usage Guide & Command Examples
 
-* **التشغيل بالوضع التفاعلي (Interactive Menu):**
+- **Launch Interactive Menu:**
   ```bash
   sudo python3 mac_changer.py
   ```
 
-* **التغيير لعنوان عشوائي سريع:**
+- **Assign a Random Unicast MAC:**
   ```bash
   sudo python3 mac_changer.py -i eth0 -r
   ```
 
-* **التغيير لـ MAC مخصص:**
+- **Assign a Custom MAC Address:**
   ```bash
   sudo python3 mac_changer.py -i eth0 -m 00:11:22:33:44:55
   ```
 
-* **إعادة ضبط الكرت (Reset):**
+- **Reset Interface to Default State:**
   ```bash
   sudo python3 mac_changer.py -i eth0 -R
   ```
 
 ---
-
-## 🔮 أفكار لتطوير الأداة مستقبلاً (Future Roadmap)
-
-إذا أردت تطوير الأداة في المستقل لإضافتها لمشاريع أعمق:
-1. **OUI Vendor Spoofing:** إمكانية جعل الـ MAC يبدو وكأنه مصنع من شركة محددة (مثل جعل الجهاز يظهر كـ Apple أو Cisco أو Samsung).
-2. **Scheduled Timer:** تغيير الـ MAC تلقائياً كل زمن محدد (مثلاً كل 10 دقائق) لزيادة الخصوصية.
-3. **GUI Interface:** إضافة واجهة رسمية بسيطة باستخدام مكتبة `PyQt` أو `Tkinter`.
